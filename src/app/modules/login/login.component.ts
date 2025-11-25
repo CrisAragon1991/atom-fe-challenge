@@ -3,7 +3,7 @@ import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { GeneralResponse } from '../../../shared/general-response';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +14,7 @@ import { GeneralResponse } from '../../../shared/general-response';
 })
 export class LoginComponent {
   private loginService = inject(LoginService);
+  private router = inject(Router);
   email = '';
   loading = false;
   error: string | null = null;
@@ -25,6 +26,7 @@ export class LoginComponent {
       next: (res) => {
         this.loading = false;
         localStorage.setItem('user', JSON.stringify(res.data));
+        this.router.navigate(['/todo']);
       },
       error: (err) => {
         if (err.status === 404) {
