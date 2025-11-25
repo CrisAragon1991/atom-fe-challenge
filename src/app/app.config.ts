@@ -1,6 +1,7 @@
-import { ApplicationConfig, InjectionToken } from "@angular/core";
+import { ApplicationConfig, InjectionToken, importProvidersFrom } from "@angular/core";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { provideRouter } from "@angular/router";
+import { HttpClientModule } from '@angular/common/http';
 import { environment } from "../environments/environment";
 import { routes } from "./app.routes";
 
@@ -10,6 +11,7 @@ export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(routes),
         provideAnimationsAsync(),
+        importProvidersFrom(HttpClientModule),
         { provide: APP_CONFIG, useValue: environment }
     ]
 };

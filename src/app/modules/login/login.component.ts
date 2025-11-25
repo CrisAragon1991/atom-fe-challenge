@@ -1,14 +1,52 @@
 import { Component, inject } from '@angular/core';
-import { APP_CONFIG } from '../../app.config';
+import { LoginService } from '../../services/login.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { GeneralResponse } from '../../../shared/general-response';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, CommonModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  config = inject(APP_CONFIG);
-  // Ahora puedes acceder a config.apiUrl, config.production, etc.
+  private loginService = inject(LoginService);
+  email = '';
+  loading = false;
+  error: string | null = null;
+
+  onSubmit() {
+    this.loading = true;
+    this.error = null;
+    this.loginService.login(this.email).subscribe({
+      next: (res) => {
+        this.loading = false;
+        localStorage.setItem('user', JSON.stringify(res.data));
+      },
+      error: (err) => {
+        if (err.status === 404) {
+          this.createUser(this.email);
+        } else {
+          this.loading = false;
+          this.error = 'Error al iniciar sesión';
+        }
+      }
+    });
+  }
+
+  createUser(email: string) {
+    this.loginService.createUser(email).subscribe({
+      next: (res) => {
+        this.loading = false;
+        this.onSubmit();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = 'Error al crear el usuario';
+      }
+    });
+  }
 }
