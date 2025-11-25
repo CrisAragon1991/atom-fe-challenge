@@ -25,7 +25,7 @@ export class LoginComponent {
     this.loginService.login(this.email).subscribe({
       next: (res) => {
         this.loading = false;
-        localStorage.setItem('user', JSON.stringify(res.data));
+        localStorage.setItem('login', JSON.stringify(res.data));
         this.router.navigate(['/todo']);
       },
       error: (err) => {
