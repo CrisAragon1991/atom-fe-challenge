@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import Swal from 'sweetalert2';
 import { TodoService } from '../../../services/todo.service';
 import { Todo } from '../../../models/todo';
 import { CommonModule } from '@angular/common';
@@ -52,9 +53,46 @@ export class TodoComponent implements OnInit {
   }
 
   updateTodo(edited: Todo) {
-    this.todos.set(
-      this.todos().map(t => t.id === edited.id ? { ...t, ...edited } : t)
-    );
-    this.closeEditModal();
+    if (!edited.id) {
+      this.todoService.createTodo(edited).subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.todos.set([res.data, ...this.todos()]);
+            Swal.fire({
+              icon: 'success',
+              title: '¡Tarea creada!',
+              text: 'El todo fue creado correctamente.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          }
+          this.closeEditModal();
+        },
+        error: (err) => {
+          console.error('Error al crear el todo', err);
+        }
+      });
+    } else {
+      this.todoService.updateTodo(edited.id, edited).subscribe({
+        next: (res) => {
+          if (res.data) {
+            this.todos.set(
+              this.todos().map(t => t.id === edited.id ? { ...t, ...res.data } : t)
+            );
+            Swal.fire({
+              icon: 'success',
+              title: '¡Tarea actualizada!',
+              text: 'El todo fue actualizado correctamente.',
+              timer: 1500,
+              showConfirmButton: false
+            });
+          }
+          this.closeEditModal();
+        },
+        error: (err) => {
+          console.error('Error al actualizar el todo', err);
+        }
+      });
+    }
   }
 }
