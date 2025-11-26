@@ -1,1 +1,37 @@
-<p>edit works!</p>
+<div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Editar Tarea</h5>
+				<button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+			</div>
+			<form #todoForm="ngForm" (ngSubmit)="save()">
+				<div class="modal-body">
+					<div class="mb-3">
+						<label class="form-label">Nombre</label>
+						<input 
+							class="form-control" 
+							[(ngModel)]="editTodo.name" 
+							name="name" 
+							required 
+							minlength="5"
+							#nameCtrl="ngModel"
+						/>
+						<div *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)" class="text-danger small mt-1">
+							<div *ngIf="nameCtrl.errors?.['required']">El nombre es requerido.</div>
+							<div *ngIf="nameCtrl.errors?.['minlength']">El nombre debe tener al menos 5 caracteres.</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Descripción</label>
+						<textarea class="form-control" [(ngModel)]="editTodo.description" name="description"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
+					<button type="submit" class="btn btn-primary" [disabled]="todoForm.invalid">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
