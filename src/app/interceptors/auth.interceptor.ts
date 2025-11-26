@@ -37,7 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
           return this.loginService.refreshToken().pipe(
             switchMap((res) => {
               localStorage.setItem('login', JSON.stringify(res.data));
-              const { accessToken } = res.data.token;
+              var accessToken = res.data.token;
               const retryReq = req.clone({
                 setHeaders: { Authorization: `Bearer ${accessToken}` }
               });
