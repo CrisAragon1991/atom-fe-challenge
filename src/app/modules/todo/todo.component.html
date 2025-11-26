@@ -7,12 +7,25 @@
 					<i class="bi bi-plus"></i> Agregar
 				</button>
 			</div>
-			<div class="card mb-3 shadow-sm">
+			<div *ngFor="let todo of todos()" class="card mb-3 shadow-sm">
 				<div class="card-body">
-					<h5 class="card-title">Aprender Angular</h5>
-					<p class="card-text">Completar el reto de la app de todos usando Angular standalone y Bootstrap.</p>
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="card-title mb-0">{{ todo.name }}</h5>
+						<div *ngIf="todo.stateId === '1'">
+							<input type="checkbox" class="form-check-input" />
+						</div>
+					</div>
+					<p class="card-text">{{ todo.description }}</p>
 					<div class="d-flex justify-content-between align-items-center mt-3">
-						<span class="badge bg-success">Pendiente</span>
+						<span 
+							class="badge" 
+							[ngClass]="{
+								'bg-success': todo.stateId === '1',
+								'bg-secondary': todo.stateId === '2'
+							}"
+						>
+							{{ todo.stateId === '1' ? 'Pendiente' : (todo.stateId === '2' ? 'Completado' : 'Desconocido') }}
+						</span>
 						<div class="d-flex gap-2">
 							<button class="btn btn-outline-primary btn-sm" type="button">
 								<i class="bi bi-pencil"></i> Editar
