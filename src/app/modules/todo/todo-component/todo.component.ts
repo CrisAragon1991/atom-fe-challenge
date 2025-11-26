@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, AfterViewInit } from '@angular/core';
+ import { Component, inject, OnInit, signal, AfterViewInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { TodoService } from '../../../services/todo.service';
 import { Todo } from '../../../models/todo';
@@ -118,4 +118,37 @@ export class TodoComponent implements OnInit {
     }
   }
 
+   async deleteTodo(todo: Todo) {
+    const result = await Swal.fire({
+      title: '¿Eliminar tarea?',
+      text: 'Esta acción no se puede deshacer. ¿Deseas eliminar la tarea?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    });
+    if (result.isConfirmed) {
+      this.todoService.deleteTodo(todo.id).subscribe({
+        next: () => {
+          this.todos.set(this.todos().filter(t => t.id !== todo.id));
+          Swal.fire({
+            icon: 'success',
+            title: '¡Eliminado!',
+            text: 'La tarea fue eliminada correctamente.',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        },
+        error: (err) => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo eliminar la tarea.'
+          });
+          console.error('Error al eliminar el todo', err);
+        }
+      });
+    }
+  }
 }
