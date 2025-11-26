@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import Swal from 'sweetalert2/dist/sweetalert2.all.js';
 import { LoginService } from '../../services/login.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -39,16 +40,29 @@ export class LoginComponent {
     });
   }
 
-  createUser(email: string) {
-    this.loginService.createUser(email).subscribe({
-      next: (res) => {
-        this.loading = false;
-        this.onSubmit();
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error = 'Error al crear el usuario';
-      }
+  async createUser(email: string) {
+    const result = await Swal.fire({
+      title: '¿Crear nuevo usuario?',
+      text: `¿Deseas crear el usuario con el correo ${email}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, crear',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
     });
+    if (result.isConfirmed) {
+      this.loginService.createUser(email).subscribe({
+        next: (res) => {
+          this.loading = false;
+          this.onSubmit();
+        },
+        error: (err) => {
+          this.loading = false;
+          this.error = 'Error al crear el usuario';
+        }
+      });
+    } else {
+      this.loading = false;
+    }
   }
 }
