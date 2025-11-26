@@ -1,4 +1,5 @@
 import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { TodoService } from '../../../services/todo.service';
 import { Todo } from '../../../models/todo';
@@ -13,7 +14,9 @@ import { EditComponent } from '../edit-component/edit.component';
   styleUrl: './todo.component.scss'
 })
 export class TodoComponent implements OnInit {
+  
   private todoService = inject(TodoService);
+  private router = inject(Router);
   todos = signal<Todo[]>([]);
   showEditModal = signal(false);
   selectedTodo = signal<Todo | null>(null);
@@ -174,5 +177,11 @@ export class TodoComponent implements OnInit {
         }
       });
     }
+  }
+
+  logout() {
+    localStorage.removeItem('login');
+    this.router.navigate(['/login']);
+    this.showAccountDropdown.set(false);
   }
 }
