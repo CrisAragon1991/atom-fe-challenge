@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, AfterViewInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { TodoService } from '../../../services/todo.service';
 import { Todo } from '../../../models/todo';
@@ -16,13 +16,13 @@ export class TodoComponent implements OnInit {
   private todoService = inject(TodoService);
   todos = signal<Todo[]>([]);
   showEditModal = signal(false);
-  selectedTodo = signal<Todo|null>(null);
+  selectedTodo = signal<Todo | null>(null);
 
   ngOnInit(): void {
     this.todoService.getTodos().subscribe({
       next: (res) => {
         if (res.data)
-        this.todos.set(res.data);
+          this.todos.set(res.data);
       },
       error: (err) => {
         console.error('Error al cargar los todos', err);
@@ -95,4 +95,27 @@ export class TodoComponent implements OnInit {
       });
     }
   }
+
+  async onCheckboxComplete(todo: Todo, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    // Mostrar confirmación
+    const result = await Swal.fire({
+      title: '¿Finalizar tarea?',
+      text: '¿Estás seguro de marcar esta tarea como completada?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, completar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    });
+    if (result.isConfirmed) {
+      // Actualizar el estado y llamar a updateTodo
+      const updated = { ...todo, stateId: '2' };
+      this.updateTodo(updated);
+    } else {
+      // Si cancela, desmarcar el checkbox
+      checkbox.checked = false;
+    }
+  }
+
 }

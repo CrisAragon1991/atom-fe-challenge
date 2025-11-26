@@ -18,7 +18,16 @@
 					<div class="d-flex justify-content-between align-items-center">
 						<h5 class="card-title mb-0">{{ todo.name }}</h5>
 						<div *ngIf="todo.stateId === '1'">
-							<input type="checkbox" class="form-check-input" />
+							<input
+								type="checkbox"
+								class="form-check-input form-check-lg border border-primary shadow-lg"
+								style="cursor: pointer;"
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								data-bs-custom-class="custom-tooltip"
+								title="Haz clic para marcar como completada"
+								(change)="onCheckboxComplete(todo, $event)"
+							/>
 						</div>
 					</div>
 					<p class="card-text">{{ todo.description }}</p>
