@@ -1,4 +1,3 @@
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TodoComponent } from './todo.component';
 import { APP_CONFIG } from 'src/app/app.config';
@@ -84,4 +83,44 @@ describe('TodoComponent', () => {
     expect(localStorage.removeItem).toHaveBeenCalledWith('login');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
+
+    it('should update an existing todo', async () => {
+      const todo: Todo = { id: '1', name: 'Original', createdAt: new Date(), updatedAt: new Date(), stateId: '1' };
+      component.todos.set([todo]);
+      const updated: Todo = { ...todo, name: 'Updated' };
+      const response = { success: true, data: updated };
+      todoServiceSpy.updateTodo = jasmine.createSpy().and.returnValue(of(response));
+      // Mock Swal.fire solo durante este test
+      const SwalImport = await import('sweetalert2/dist/sweetalert2.all.js');
+      const originalFire = SwalImport.default.fire;
+      SwalImport.default.fire = () => Promise.resolve({}) as any;
+      try {
+        component.updateTodo(updated);
+        expect(todoServiceSpy.updateTodo).toHaveBeenCalledWith('1', updated);
+        expect(component.todos()[0].name).toBe('Updated');
+      } finally {
+        SwalImport.default.fire = originalFire;
+      }
+    });
+
+  it('should create a new todo', async () => {
+    const newTodo: any = { name: 'Nuevo', description: '', createdAt: new Date(), updatedAt: new Date(), stateId: '1' };
+    const created: Todo = { ...newTodo, id: '2' };
+    const response = { success: true, data: created };
+    todoServiceSpy.createTodo = jasmine.createSpy().and.returnValue(of(response));
+    // Mock Swal.fire solo durante este test
+    const SwalImport = await import('sweetalert2/dist/sweetalert2.all.js');
+    const originalFire = SwalImport.default.fire;
+    SwalImport.default.fire = () => Promise.resolve({}) as any;
+    try {
+      component.todos.set([]);
+      component.updateTodo(newTodo);
+      expect(todoServiceSpy.createTodo).toHaveBeenCalledWith(newTodo);
+      expect(component.todos()[0].id).toBe('2');
+      expect(component.todos()[0].name).toBe('Nuevo');
+    } finally {
+      SwalImport.default.fire = originalFire;
+    }
+  });
+
 });
