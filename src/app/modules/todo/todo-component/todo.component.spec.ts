@@ -123,4 +123,38 @@ describe('TodoComponent', () => {
     }
   });
 
+  it('should delete a todo after confirmation', async () => {
+    const todo: Todo = { id: '1', name: 'Eliminar', createdAt: new Date(), updatedAt: new Date(), stateId: '1' };
+    component.todos.set([todo]);
+    todoServiceSpy.deleteTodo = jasmine.createSpy().and.returnValue(of({ success: true, data: null }));
+    const SwalImport = await import('sweetalert2/dist/sweetalert2.all.js');
+    const originalFire = SwalImport.default.fire;
+    SwalImport.default.fire = () => Promise.resolve({ isConfirmed: true }) as any;
+    try {
+      await component.deleteTodo(todo);
+      expect(todoServiceSpy.deleteTodo).toHaveBeenCalledWith('1');
+      expect(component.todos().length).toBe(0);
+    } finally {
+      SwalImport.default.fire = originalFire;
+    }
+  });
+
+  it('should mark a todo as completed after checkbox confirmation', async () => {
+    const todo: Todo = { id: '1', name: 'Completar', createdAt: new Date(), updatedAt: new Date(), stateId: '1' };
+    component.todos.set([todo]);
+    const updated: Todo = { ...todo, stateId: '2' };
+    todoServiceSpy.updateTodo = jasmine.createSpy().and.returnValue(of({ success: true, data: updated }));
+    const SwalImport = await import('sweetalert2/dist/sweetalert2.all.js');
+    const originalFire = SwalImport.default.fire;
+    SwalImport.default.fire = () => Promise.resolve({ isConfirmed: true }) as any;
+    try {
+      const event = { target: document.createElement('input') } as any;
+      await component.onCheckboxComplete(todo, event);
+      expect(todoServiceSpy.updateTodo).toHaveBeenCalledWith('1', { ...todo, stateId: '2' });
+      expect(component.todos()[0].stateId).toBe('2');
+    } finally {
+      SwalImport.default.fire = originalFire;
+    }
+  });
+
 });
