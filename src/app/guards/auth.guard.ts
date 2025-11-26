@@ -6,6 +6,5 @@ export const authGuard: CanActivateFn = (route, state) => {
   if (user) {
     return true;
   }
-  // Redirige a login si no hay usuario
   return (inject(Router)).createUrlTree(['/login']);
 };

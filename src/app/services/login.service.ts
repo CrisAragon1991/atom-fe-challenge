@@ -20,4 +20,13 @@ export class LoginService {
   createUser(email: string): Observable<IUser> {
     return this.http.post<IUser>(`${this.config.apiUrl}users`, { email });
   }
+
+  refreshToken(): Observable<any> {
+    const loginData = localStorage.getItem('login');
+    if (!loginData) {
+      throw new Error('No login data found in localStorage');
+    }
+    const loginType = JSON.parse(loginData) as ILoginType;
+    return this.http.post<GeneralResponse<ILoginType>>(`${this.config.apiUrl}users/refresh-token`, { refreshToken: loginType.refreshToken });
+  }
 }
