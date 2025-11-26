@@ -21,6 +21,12 @@ export class LoginComponent {
   error: string | null = null;
 
   onSubmit() {
+    // Validación de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.error = 'Por favor ingresa un correo electrónico válido.';
+      return;
+    }
     this.loading = true;
     this.error = null;
     this.loginService.login(this.email).subscribe({
