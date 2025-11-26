@@ -1,3 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+	<div class="container-fluid">
+		<a class="navbar-brand fw-bold" href="#">To do</a>
+		<div class="ms-auto">
+			<div class="position-relative">
+				<button
+					class="btn btn-link p-0 d-inline-flex align-items-center"
+					id="accountMenu"
+					type="button"
+					aria-haspopup="true"
+					aria-expanded="false"
+					(click)="toggleAccountDropdown($event)"
+				>
+					<img
+						src="assets/images/account.svg"
+						alt="Cuenta"
+						width="36"
+						height="36"
+						class="rounded-circle border border-light shadow-sm"
+					/>
+				</button>
+				<div
+					id="accountDropdownMenu"
+					class="dropdown-menu dropdown-menu-end show"
+					*ngIf="showAccountDropdown()"
+					style="display: block; position: absolute; right: 0;"
+				>
+					<button class="dropdown-item" type="button">Cerrar sesión</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</nav>
 <div class="container py-4">
 	<app-edit 
 		*ngIf="showEditModal() && selectedTodo()" 

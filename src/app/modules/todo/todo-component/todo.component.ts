@@ -1,4 +1,4 @@
- import { Component, inject, OnInit, signal, AfterViewInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import Swal from 'sweetalert2';
 import { TodoService } from '../../../services/todo.service';
 import { Todo } from '../../../models/todo';
@@ -18,6 +18,8 @@ export class TodoComponent implements OnInit {
   showEditModal = signal(false);
   selectedTodo = signal<Todo | null>(null);
 
+  showAccountDropdown = signal(false);
+
   ngOnInit(): void {
     this.todoService.getTodos().subscribe({
       next: (res) => {
@@ -28,6 +30,28 @@ export class TodoComponent implements OnInit {
         console.error('Error al cargar los todos', err);
       }
     });
+  }
+
+  toggleAccountDropdown(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.showAccountDropdown.update(v => !v);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event?: MouseEvent) {
+    const target = (event?.target as HTMLElement) ?? document.body;
+    const trigger = document.getElementById('accountMenu');
+    const menu = document.getElementById('accountDropdownMenu');
+    if (!trigger || !menu) {
+      this.showAccountDropdown.set(false);
+      return;
+    }
+    const clickedInsideTrigger = trigger.contains(target);
+    const clickedInsideMenu = menu.contains(target);
+    if (!clickedInsideTrigger && !clickedInsideMenu) {
+      this.showAccountDropdown.set(false);
+    }
   }
 
   openEditModal(todo: Todo) {
