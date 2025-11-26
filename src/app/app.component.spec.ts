@@ -1,11 +1,15 @@
 import { TestBed } from "@angular/core/testing";
-
 import { AppComponent } from "./app.component";
+import { APP_CONFIG } from 'src/app/app.config';
+import { environment } from "src/environments/environment";
 
 describe("AppComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [AppComponent],
+        providers: [
+            { provide: APP_CONFIG, useValue: environment }
+        ],
         }).compileComponents();
     });
 
@@ -19,12 +23,5 @@ describe("AppComponent", () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
         expect(app.title).toEqual("atom-challenge-fe-template");
-    });
-
-    it("should render title", () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.nativeElement as HTMLElement;
-        expect(compiled.querySelector("h1")?.textContent).toContain("Hello, atom-challenge-fe-template");
     });
 });

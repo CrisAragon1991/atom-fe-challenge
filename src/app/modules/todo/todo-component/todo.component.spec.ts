@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TodoComponent } from '../todo.component';
+import { TodoComponent } from './todo.component';
+import { APP_CONFIG } from 'src/app/app.config';
+import { environment } from 'src/environments/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('TodoComponent', () => {
   let component: TodoComponent;
@@ -8,7 +11,10 @@ describe('TodoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TodoComponent]
+      imports: [TodoComponent, HttpClientModule],
+      providers: [
+        { provide: APP_CONFIG, useValue: environment }
+      ]
     })
     .compileComponents();
     
