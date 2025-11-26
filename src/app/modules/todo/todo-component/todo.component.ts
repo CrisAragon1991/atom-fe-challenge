@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { TodoService } from '../../services/todo.service';
-import { Todo } from '../../models/todo';
+import { TodoService } from '../../../services/todo.service';
+import { Todo } from '../../../models/todo';
 
 import { CommonModule } from '@angular/common';
 

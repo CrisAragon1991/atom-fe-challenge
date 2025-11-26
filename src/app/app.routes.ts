@@ -17,7 +17,7 @@ export const routes: Routes = [
     },
     {
         path: 'todo',
-        loadComponent: () => import('./modules/todo/todo.component').then(m => m.TodoComponent),
+        loadComponent: () => import('./modules/todo/todo-component/todo.component').then(m => m.TodoComponent),
         canActivate: [authGuard]
     }
 ];
