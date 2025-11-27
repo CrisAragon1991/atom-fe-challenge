@@ -7,12 +7,14 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError, switchMap, catchError } from 'rxjs';
+import { Router } from '@angular/router';
 import { LoginService } from '../services/login.service';
 import { ILoginType } from '../models/login-type';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private loginService = inject(LoginService);
+  private router = inject(Router);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     
@@ -42,6 +44,11 @@ export class AuthInterceptor implements HttpInterceptor {
                 setHeaders: { Authorization: `Bearer ${accessToken}` }
               });
               return next.handle(retryReq);
+            }),
+            catchError(() => {
+              localStorage.removeItem('login');
+              this.router.navigate(['/login']);
+              return throwError(() => error);
             })
           );
         }
